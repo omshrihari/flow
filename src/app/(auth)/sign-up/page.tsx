@@ -17,6 +17,7 @@ import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { signup } from "@/actions/auth";
 import { createClient } from "@/lib/supabase/client";
+import { getURL } from "@/lib/utils/url";
 
 function SignupContent() {
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +47,7 @@ function SignupContent() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${location.origin}/api/auth/callback?next=${encodeURIComponent(nextUrl)}`,
+        redirectTo: `${getURL()}api/auth/callback?next=${encodeURIComponent(nextUrl)}`,
       },
     });
   };
