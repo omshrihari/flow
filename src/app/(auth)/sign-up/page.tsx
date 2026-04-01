@@ -1,4 +1,3 @@
-// app/sign-up/page.tsx
 "use client";
 
 import Link from "next/link";
@@ -19,7 +18,7 @@ import { useSearchParams } from "next/navigation";
 import { signup } from "@/actions/auth";
 import { createClient } from "@/lib/supabase/client";
 
-export default function SignupPage() {
+function SignupContent() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -53,7 +52,6 @@ export default function SignupPage() {
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
     <div className="flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center justify-center text-center">
@@ -167,6 +165,17 @@ export default function SignupPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    }>
+      <SignupContent />
     </Suspense>
   );
 }

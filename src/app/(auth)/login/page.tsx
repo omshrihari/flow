@@ -1,4 +1,3 @@
-// app/login/page.tsx  (or wherever your LoginPage lives)
 "use client";
 
 import Link from "next/link";
@@ -19,11 +18,10 @@ import { useSearchParams } from "next/navigation";
 import { login } from "@/actions/auth";
 import { createClient } from "@/lib/supabase/client";
 
-export default function LoginPage() {
+function LoginContent() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Read ?next= from the URL e.g. /login?next=/invite/abc123
   const searchParams = useSearchParams();
   const nextUrl = searchParams.get("next") ?? "/dashboard";
 
@@ -33,7 +31,6 @@ export default function LoginPage() {
     setError(null);
     const formData = new FormData(e.currentTarget);
 
-    // Pass nextUrl to the server action so it can redirect correctly
     formData.append("next", nextUrl);
 
     const result = await login(formData);
@@ -49,15 +46,12 @@ export default function LoginPage() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        // Pass next through the callback URL so Google OAuth
-        // lands on the right page after auth
         redirectTo: `${location.origin}/api/auth/callback?next=${encodeURIComponent(nextUrl)}`,
       },
     });
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
     <div className="flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center justify-center text-center">
@@ -167,6 +161,17 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    }>
+      <LoginContent />
     </Suspense>
   );
 }
