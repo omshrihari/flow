@@ -2,7 +2,15 @@ export const getURL = () => {
   let url =
     process?.env?.NEXT_PUBLIC_SITE_URL ?? // Set this to your site URL in production
     process?.env?.NEXT_PUBLIC_VERCEL_URL ?? // Automatically set by Vercel
+    process?.env?.VERCEL_URL ?? // Final server-side fallback for Vercel
     'http://localhost:3000/'
+
+  // If we are on the client, window.location.origin is the most reliable way 
+  // to get the current URL without hardcoding or environment variables.
+  if (typeof window !== 'undefined') {
+    url = window.location.origin
+  }
+
   // Make sure to include `https://` when not localhost.
   url = url.includes('http') ? url : `https://${url}`
   // Make sure to include a trailing `/`.
